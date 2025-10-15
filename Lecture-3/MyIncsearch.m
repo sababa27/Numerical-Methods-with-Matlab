@@ -15,8 +15,8 @@ function xb = myIncsearch(func, xmin, xmax, ns)
     for i = 1:1:length(x)-1
         if sign(f(i)) ~= sign(f(i+1))
             nb = nb + 1;
-            xb(nb, 1) = f(i);
-            xb(nb, 2) = f(i+1);
+            xb(nb, 1) = x(i);
+            xb(nb, 2) = x(i+1);
         end
     end
 
