@@ -1,4 +1,4 @@
-function y0 = MyNewtint(x,y,x0)
+function [B, y0] = MyNewtint(x,y,x0)
     n = length(x);
     if length(y)~=n
         error('x and y must be same length')
@@ -12,8 +12,9 @@ function y0 = MyNewtint(x,y,x0)
             b(i,j) = (b(i+1,j-1)-b(i,j-1))/(x(i+j-1)-x(i));
         end
     end
+ 
+    B = b(1, :);
     
-
     xt = 1;
     y0 = b(1,1);
     for j = 1:1:n-1
