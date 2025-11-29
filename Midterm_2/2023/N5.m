@@ -1,50 +1,55 @@
-function I3 = int3D(f, xl, xu, yl, yu, zl, zu)
+f = @(x, y, z) x^2*cos(x*y*z^2);
+xl = -1;
+xu = -0.5;
+yl = -1;
+yu = 2;
+zl = -pi;
+zu = pi;
+I = int3D(f, xl, xu, yl, yu, zl, zu);
+
+fVec = @(x, y, z) x.^2.*cos(x.*y.*z.^2);
+I
+
+integral3(fVec,xl,xu,yl,yu,zl,zu)
+
+function I = int3D(f, xl, xu, yl, yu, zl, zu)
     nx = xu - xl;
     ny = yu - yl;
-    nz = zl - zu;
+    nz = zu - zl;
+
     n0 = nx;
     if ny < n0
         n0 = ny;
     end
-
     if nz < n0
         n0 = nz;
     end
-    nx = (nx/n0)*100;
-    ny = (ny/n0)*100;
-    nz = (nz/n0)*100;
-    
-    
-end
 
-function I2 = int2D(f, xl, xu, yl, yu)
-    nx = xu - xl;
-    ny = yu - yl;
-    n0 = nx;
-    if ny < n0
-        n0 = ny;
-    end
-    nx = (nx/n0)*100;
-    ny = (ny/n0)*100;
-    hx = (xu-xl)/nx;
-    hy = (yu - yl)/ny;
+    nx = 100*round(nx/n0,2);
+    ny = 100*round(ny/n0,2);
+    nz = 100*round(nz/n0,2);
 
     x = linspace(xl, xu, nx);
     y = linspace(yl, yu, ny);
+    z = linspace(zl, zu, nz);
     
-    s = zeros(ny);
+    w = zeros(nz, ny);
+
+    for i = 1:1:nz
+        for j = 1:1:ny
+            func = @(x) f(x, y(j), z(i));
+            w(i, j) = trap(func, xl, xu, nx);
+        end
+    end
     
-    for i = 1:1:ny
-        f0 = @(x) f(x, y(i));
-        s(i) = trap(f0, xl, xu, nx);
+    v = zeros(1,nz);
+    for i = 1:1:nz
+        v(i) = trapz(y, w(i,:));
     end
 
-    f0 = @(s) f()
-
-    
+    I = trapz(z, v);
 end
 
-1 2 3
 
 function I = trap(func,a,b,n,varargin)
 if nargin<3,error('at least 3 input arguments required'),end
