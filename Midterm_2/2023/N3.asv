@@ -1,14 +1,36 @@
 %{
-y=(m√x+b)^(1/2)
-y^2 = m√x+b
+
+y = b*exp(m*x)
+ln(y) = ln(b*exp(m*x))
+ln(y) = ln(b) + m*x;
+
+ln(y) = b2 + m*x;
+
+ln(b) = b2
+b = exp(b2)
 %}
 
-x = [1 2 3 5 8];
-y = [0.8 1.9 2.2 3 3.5];
-[a r] = linregr(sqrt(x),y)
+x = [1900 1950 1970 1980 1990 2000 2010];
+y = [400 557 825 981 1135 1266 1370];
+[b m] = expFit(x, y);
 
-plot(x,y, 'xr');
+x0 = 1985;
+y0 = b*exp(m*x0);
+
+plot(x, y, 'xr');
 hold on;
+x1 = 1850:1:2015;
+y1 = b*(e.^(m*x));
+plot(x1, y1, 'g');
+
+
+function [b m] = expFit(x, y)
+    [a r] = linregr(x,log(y));
+    m = a(1);
+    b2 = a(2);
+    b = exp(b2);
+end
+
 
 function [a, r2] = linregr(x,y)
 n = length(x);
@@ -22,4 +44,6 @@ r2 = ((n*sxy - sx*sy)/sqrt(n*sx2 - sx^2)/sqrt(n*sy2 - sy^2))^2;
 % create plot of data and best fit line
 xp = linspace(min(x),max(x),2);
 yp = a(1)*xp + a(2);
+plot(x,y,'o',xp,yp)
+grid on
 end

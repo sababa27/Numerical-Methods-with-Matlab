@@ -1,0 +1,50 @@
+%{
+
+y = b*exp(m*x)
+ln(y) = ln(b*exp(m*x))
+ln(y) = ln(b) + m*x;
+
+ln(y) = b2 + m*x;
+
+ln(b) = b2
+b = exp(b2)
+%}
+
+x = [1900 1950 1970 1980 1990 2000 2010];
+y = [400 557 825 981 1135 1266 1370];
+[b m] = expFit(x, y);
+
+x0 = 1985;
+y0 = b*exp(m*x0);
+
+plot(x, y, 'xr');
+hold on;
+x1 = 1850:1:2015;
+y1 = b*(exp(m*x1));
+plot(x1, y1, 'g');
+y0
+
+
+function [b m] = expFit(x, y)
+    [a r] = linregr(x,log(y));
+    m = a(1);
+    b2 = a(2);
+    b = exp(b2);
+end
+
+
+function [a, r2] = linregr(x,y)
+n = length(x);
+if length(y) ~= n, error('x and y must be same length'); end
+x = x(:); y = y(:); % convert to column vectors
+sx = sum(x); sy = sum(y);
+sx2 = sum(x.*x); sxy = sum(x.*y); sy2 = sum(y.*y);
+a(1) = (n*sxy - sx*sy)/(n*sx2-sx^2);
+a(2) = sy/n - a(1)*sx/n;
+r2 = ((n*sxy - sx*sy)/sqrt(n*sx2 - sx^2)/sqrt(n*sy2 - sy^2))^2;
+% create plot of data and best fit line
+xp = linspace(min(x),max(x),2);
+yp = a(1)*xp + a(2);
+plot(x,y,'o',xp,yp)
+grid on
+end
