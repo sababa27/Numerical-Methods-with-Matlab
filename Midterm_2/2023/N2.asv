@@ -1,0 +1,25 @@
+%{
+y=(m√x+b)^(1/2)
+y^2 = m√x+b
+%}
+
+x = [1 2 3 5 8];
+y = [0.8 1.9 2.2 3 3.5];
+[a r] = linregr(sqrt(x),y)
+
+plot(x,y, 'xr');
+hold on;
+
+function [a, r2] = linregr(x,y)
+n = length(x);
+if length(y) ~= n, error('x and y must be same length'); end
+x = x(:); y = y(:); % convert to column vectors
+sx = sum(x); sy = sum(y);
+sx2 = sum(x.*x); sxy = sum(x.*y); sy2 = sum(y.*y);
+a(1) = (n*sxy - sx*sy)/(n*sx2-sx^2);
+a(2) = sy/n - a(1)*sx/n;
+r2 = ((n*sxy - sx*sy)/sqrt(n*sx2 - sx^2)/sqrt(n*sy2 - sy^2))^2;
+% create plot of data and best fit line
+xp = linspace(min(x),max(x),2);
+yp = a(1)*xp + a(2);
+end
